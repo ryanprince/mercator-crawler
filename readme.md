@@ -5,10 +5,10 @@ Provides a URL-frontier, MetaData fetcher, URL Deduper, and is very plug and pla
 To run the default Mercator Crawler with no options (this will fetch metadata and provide a readability like function that grabs the main content/article body):
 
 ```js
-import { Mercator } from "mercator-crawler";
+import { DefaultFetcherReturn, Mercator } from "../mercator";
 
 (async () => {
-	const mercator = new Mercator();
+	const mercator = new Mercator<DefaultFetcherReturn>();
 
 	// do not await this seedURL. You can only await it after you have called runToCompletion or iterated through all the data sent back.
 	mercator.seedURL("https://www.wsj.com/articles/magnus-carlsen-ian-nepomniachtchi-world-chess-championship-computer-analysis-11639003641").then(x => {
@@ -22,10 +22,10 @@ import { Mercator } from "mercator-crawler";
 Example 2:
 
 ```js
-import { Mercator } from "mercator-crawler";
+import { DefaultFetcherReturn, Mercator } from "../mercator";
 
 (async () => {
-	const mercator = new Mercator();
+	const mercator = new Mercator<DefaultFetcherReturn>();
 
 	// The sendURL can be awaited as it automatically runs to completion.
 	const {articleBody, metadata} = await mercator.sendURL("https://www.wsj.com/articles/magnus-carlsen-ian-nepomniachtchi-world-chess-championship-computer-analysis-11639003641");

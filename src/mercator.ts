@@ -6,39 +6,33 @@ import { Link, URLFrontier } from "./url-frontier/url-frontier";
 import { AsyncQueue } from "./utils/AsyncQueue";
 import { DePromisify } from "./utils/types";
 
+export type DataFetcher<T> = (string: Link) => Promise<T>;
+
 export type MercatorSettings<T> = {
 	urlFrontier: URLFrontier;
-	dataFetcher: (string: Link) => T;
+	dataFetcher: DataFetcher<T>;
 };
 
-const defaultMercatorSettings: MercatorSettings<ReturnType<typeof scrapeMeta>> =
+export type MercatorSettingsOverrides<T> = {
+	dataFetcher: DataFetcher<T>;
+}
+
+export type DefaultFetcherReturn = DePromisify<ReturnType<typeof scrapeMeta>>;
+const defaultMercatorSettings: MercatorSettings<DefaultFetcherReturn> =
 	{
 		urlFrontier: new URLFrontier(),
 		dataFetcher: scrapeMeta,
 	} as const;
 
-type F = unknown extends any ? true : false;
-
-export type DefaultMercatorReturn = DePromisify<ReturnType<typeof scrapeMeta>>;
 export class Mercator<U> {
-	#settings: MercatorSettings<
-		Promise<unknown extends U ? DefaultMercatorReturn : U>
-	> = defaultMercatorSettings as any;
-	#inFrontierCache: Map<
-		string,
-		Promise<unknown extends U ? DefaultMercatorReturn : U>
-	> = new Map();
-	#fetchingData: Map<
-		string,
-		Promise<unknown extends U ? DefaultMercatorReturn : U>
-	> = new Map();
-
-	constructor(settings?: Partial<MercatorSettings<Promise<U>>>) {
+	#settings: MercatorSettings<U>;
+	#inFrontierCache: Map<string, Promise<U>> = new Map();
+	#fetchingData: Map<string, Promise<U>> = new Map();
+	constructor(settings?: MercatorSettingsOverrides<U>) {
 		this.#settings = {
 			...defaultMercatorSettings,
-			...settings,
-			dataFetcher: settings?.dataFetcher ?? defaultMercatorSettings.dataFetcher
-		} as any;
+			...settings
+		} as MercatorSettings<U>;
 	}
 
 	async sendURL(url: Link) {

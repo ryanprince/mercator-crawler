@@ -1,5 +1,5 @@
 import type { Server } from "http";
-import { Mercator } from "../mercator";
+import { DefaultFetcherReturn, Mercator } from "../mercator";
 import { staticServer } from "../utils/crawlable-server";
 import { DePromisify } from "../utils/types";
 
@@ -35,7 +35,7 @@ test("Mercator basic", async () => {
 					rData.push(data);
 				});
 		}
-		const data: DePromisify<ReturnType<Mercator<unknown>["seedURL"]>>[] = [];
+		const data: any[] = [];
 		for await (const datum of mercator) {
 			data.push(datum);
 		}
@@ -137,9 +137,9 @@ test("Mercator basic", async () => {
 });
 
 test("Mercator dataFetcher", async () => {
-	const mercator = new Mercator({
+	const mercator = new Mercator<{ foo: String }>({
 		async dataFetcher() {
-			return { foo: "bar" } as const;
+			return Promise.resolve({ foo: "bar" } as const);
 		},
 	});
 	const data = await mercator.sendURL(
@@ -161,7 +161,7 @@ test("Mercator fetchImage", async () => {
 			}
 		);
 	});
-	const mercator = new Mercator();
+	const mercator = new Mercator<DefaultFetcherReturn>();
 	const data = await mercator.sendURL(
 		`http://localhost:${imageServerPort}/img.png`
 	);
@@ -182,7 +182,7 @@ test("Mercator fetchImage", async () => {
 			}
 		);
 	});
-	const mercator = new Mercator();
+	const mercator = new Mercator<DefaultFetcherReturn>();
 	const data = await mercator.sendURL(
 		`http://localhost:${imageServerPort}/img.png`
 	);

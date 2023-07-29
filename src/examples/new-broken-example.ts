@@ -1,5 +1,5 @@
 import { Server } from "http";
-import { Mercator } from "../mercator";
+import { DefaultFetcherReturn, Mercator } from "../mercator";
 import { staticServer } from "../utils/crawlable-server";
 
 (async () => {
@@ -7,11 +7,7 @@ import { staticServer } from "../utils/crawlable-server";
 	let servers: Server[] = [];
 	// setup 2 servers
 	servers.push(staticServer("../../public-test-3/").listen(serverPorts[0]));
-	const mercator = new Mercator({
-		// async dataFetcher() {
-		// 	return { foo: "bar" } as const;
-		// },
-	});
+	const mercator = new Mercator<DefaultFetcherReturn>();
 
 	const data = await mercator.sendURL(
 		`http://localhost:${serverPorts[0]}/img.png`
