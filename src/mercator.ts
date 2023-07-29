@@ -34,20 +34,11 @@ export class Mercator<U> {
 	> = new Map();
 
 	constructor(settings?: Partial<MercatorSettings<Promise<U>>>) {
-		if (settings?.dataFetcher && "dataFetcher" in settings) {
-			this.#settings = {
-				...defaultMercatorSettings,
-				...settings,
-				dataFetcher: settings.dataFetcher,
-			} as any;
-		} else {
-			this.#settings = {
-				...defaultMercatorSettings,
-				...settings,
-				dataFetcher:
-					settings?.dataFetcher ?? defaultMercatorSettings.dataFetcher,
-			} as any;
-		}
+		this.#settings = {
+			...defaultMercatorSettings,
+			...settings,
+			dataFetcher: settings?.dataFetcher ?? defaultMercatorSettings.dataFetcher
+		} as any;
 	}
 
 	async sendURL(url: Link) {
