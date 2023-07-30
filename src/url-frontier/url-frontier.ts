@@ -202,7 +202,9 @@ export class URLFrontier {
 		}
 	}
 
-	async *backQueueSelection() {
+	/** Generator that takes a URL from the backqueues, adds it to
+	 *  the #awaitURLs, and returns the URL to the caller. */
+	async *backQueueSelection(): AsyncGenerator<Link, undefined> {
 		while (true) {
 			if (this.#stopped) return;
 			const url: Link | undefined = await this.settings.backqueueSelector({

@@ -18,6 +18,7 @@ export type MercatorSettingsOverrides<T> = {
 }
 
 export type DefaultFetcherReturn = DePromisify<ReturnType<typeof scrapeMeta>>;
+
 const defaultMercatorSettings: MercatorSettings<DefaultFetcherReturn> =
 	{
 		urlFrontier: new URLFrontier(),
@@ -28,6 +29,7 @@ export class Mercator<U> {
 	#settings: MercatorSettings<U>;
 	#inFrontierCache: Map<string, Promise<U>> = new Map();
 	#fetchingData: Map<string, Promise<U>> = new Map();
+
 	constructor(settings?: MercatorSettingsOverrides<U>) {
 		this.#settings = {
 			...defaultMercatorSettings,
@@ -60,6 +62,7 @@ export class Mercator<U> {
 		);
 	}
 
+	/** Serially process urlFrontier's entries until it's empty. */
 	async runToCompletion() {
 		for await (const item of this) {
 		}
